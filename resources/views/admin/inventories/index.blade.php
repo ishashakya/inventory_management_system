@@ -18,6 +18,7 @@
                                     <th>S.N.</th>
                                     <th>Product Name</th>
                                     <th>Quantity</th>
+                                    <th>Price</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -27,6 +28,7 @@
                                             <td>{{ ++$key }}</td>
                                             <td>{{$inventory->product->title}}</td>
                                             <td>{{$inventory->quantity}}</td>
+                                            <td>{{$inventory->price}}</td>
                                         </tr>
                                     @endforeach
                                 @else
@@ -110,6 +112,4 @@
 
     </style>
 @endsection
-@push('scripts')
 
-@endpush

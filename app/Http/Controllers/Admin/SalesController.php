@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin\Inventory;
 use App\Models\Admin\Product;
-use App\Models\Admin\TransactionsDetails;
+use App\Models\Admin\SalesDetails;
+use App\Models\Admin\Transaction;
 use Illuminate\Http\Request;
 
-class InventoryController extends Controller
+class SalesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,9 +17,8 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $inventories=Inventory::with('product')->get();
-        // dd($inventories);
-        return view('admin.inventories.index',compact('inventories'));
+        $sales = Transaction::where('transaction_type','Outgoing')->get();
+        return view('admin.sale.index', compact('sales'));
     }
 
     /**
@@ -27,35 +26,11 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($transaction_detail)
+    public function create()
     {
-        $inventory['product_id'] = $transaction_detail->product_id;
-        $inventory['quantity']= $transaction_detail->quantity;
-        $inventory['price']= $transaction_detail->price;
-        Inventory::create($inventory);
-        // return view('admin.inventories.index',compact('$inventory'));
-    }
-    public function addQuantity($transaction_detail){
-        $inventory=Inventory::where('product_id',$transaction_detail->product_id)->
-        where('price',$transaction_detail->price)->get();
-        if(!$inventory->isEmpty()){
-            $inventory[0]->quantity+=$transaction_detail->quantity;
-            $inventory[0]->update();
-        }
-        else{
-            $this->create($transaction_detail);
-        }
-    }
-
-    public function reduceQuantity($sale_detail){
-        $inventory=Inventory::where('product_id',$sale_detail->product_id)->
-        where('price',$sale_detail->cp)->get();
-        $inventory[0]->quantity-=$sale_detail->quantity;
-        $inventory[0]->update();
-    }
-
-    public function get_data($product_id){
-        return Inventory::where('product_id',$product_id)->get();
+        $products = Product::get();
+        // dd($products);
+        return view('admin.sale.create',compact('products'));
     }
 
     /**
@@ -64,9 +39,31 @@ class InventoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
-        //
+        $sale= new Transaction();
+        $sale->merchant_name= $request->customer_name;
+        $sale->date=$request->date;
+        $sale->total = $request->total;
+        $sale->credit=$request->credit;
+        $sale->transaction_type='Outgoing';
+        $sale->save();
+
+        foreach($request->item as $key=>$value){
+            $sale_detail=new SalesDetails();
+            $sale_detail->product_id=$value["product_id"];
+            $sale_detail->cp=$value["cp"];
+            $sale_detail->quantity=$value["quantity"];
+            $sale_detail->price=$value["price"];
+            $sale_detail->transaction_id=$sale->id;
+            $sale_detail->save();
+
+            $inventoryController = new InventoryController();
+            $inventoryController->reduceQuantity($sale_detail);
+        }
+        return redirect()->route('admin.sale.index')->with('success', 'Transaction created successfully.');
+
     }
 
     /**
@@ -88,7 +85,8 @@ class InventoryController extends Controller
      */
     public function edit($id)
     {
-        //
+        // $sale=Transaction::find($id);
+        // return view('admin.sale.edit',compact('sale'));
     }
 
     /**

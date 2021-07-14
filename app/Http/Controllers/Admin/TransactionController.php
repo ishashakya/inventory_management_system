@@ -17,7 +17,7 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = Transaction::get();
+        $transactions = Transaction::where('transaction_type','Incoming')->get();
         return view('admin.transaction.index',compact('transactions'));
     }
 
@@ -56,6 +56,7 @@ class TransactionController extends Controller
         $transaction->date = $request->date;
         $transaction->total = $request->total;
         $transaction->credit = $request->credit;
+        $transaction->transaction_type='Incoming';
         $transaction->save();
 
         foreach ($request->item as $key => $value) {
@@ -68,9 +69,10 @@ class TransactionController extends Controller
             $transaction_detail->save();
 
             $inventoryController= new InventoryController();
-            $inventoryController->addQuantity($transaction_detail->product_id, $transaction_detail->quantity);
+            $inventoryController->addQuantity($transaction_detail);
         }
         // dd($transaction);
+
         return redirect()->route('admin.transaction.index')->with('success', 'Transaction created successfully.');
     }
 
@@ -106,19 +108,20 @@ class TransactionController extends Controller
      */
     public function update(Request $request, Transaction $transaction)
     {
-            $validate = $request->validate([
-                'merchant_name' => 'required',
-                'date'=>'required',
-                'total'=>'required|greater_than_field:credit',
-            ]);
-            // $transaction = new Transaction();
-            $transaction->merchant_name = $request->merchant_name;
-            $transaction->date = $request->date;
-            $transaction->total = $request->total;
-            $transaction->credit = $request->credit;
-            $transaction->update();
+        $validate = $request->validate([
+            'merchant_name' => 'required',
+            'date'=>'required',
+            'total'=>'required|greater_than_field:credit',
+        ]);
+        // $transaction = new Transaction();
+        $transaction->merchant_name = $request->merchant_name;
+        $transaction->date = $request->date;
+        $transaction->total = $request->total;
+        $transaction->credit = $request->credit;
+        $transaction->update();
             // dd($transaction);
-        return redirect()->route('admin.transaction.index')->with('success', 'Transaction created successfully.');
+        if($transaction->transaction_type=='Incoming') return redirect()->route('admin.transaction.index')->with('success', 'Transaction created successfully.');
+        else return redirect()->route('admin.sale.index')->with('success', 'Transaction created successfully.');
     }
 
     /**

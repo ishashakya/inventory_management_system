@@ -6,7 +6,7 @@
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">Transactions Table</h3>
+                        <h3 class="box-title">Purchase Table</h3>
                         @include('admin.includes.flash_message')
                         <div id="msg"></div>
                     </div>

@@ -6,7 +6,7 @@
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3>Transaction Details</h3>
+                        <h3>Sale Details</h3>
                         @include('admin.includes.flash_message')
                         <div id="msg"></div>
                     </div>
@@ -15,20 +15,20 @@
                             @csrf
                             <div class="box-body">
                                 <div class="form-group">
-                                    <label for="exampleForName">Merchant Name</label>
-                                    <div>{{ $transactions->merchant_name }}</div>
+                                    <label for="exampleForName">Customer Name</label>
+                                    <div>{{ $sales->merchant_name }}</div>
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleForName">Date</label>
-                                    <div>{{ $transactions->date }}</div>
+                                    <div>{{ $sales->date }}</div>
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleForName">Total</label>
-                                    <div>{{ $transactions->total }}</div>
+                                    <div>{{ $sales->total }}</div>
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleForName">Credit</label>
-                                    <div>{{ $transactions->credit }}</div>
+                                    <div>{{ $sales->credit }}</div>
                                 </div>
 
                         </form>
@@ -43,14 +43,15 @@
                                 <tr>
                                     <th>S.N.</th>
                                     <th>Product</th>
+                                    <th>Cost Price</th>
                                     <th>Quantity</th>
                                     <th>Price</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (count($transactions->transactiondetails) > 0)
-                                    @foreach ($transactions->transactiondetails as $key => $details)
+                                @if (count($sales->saledetails) > 0)
+                                    @foreach ($sales->saledetails as $key => $details)
                                         <tr>
                                             <td>{{ ++$key }}</td>
                                             <td>
@@ -58,6 +59,7 @@
                                                     {{$product->id==$details->product_id ? $product->title:''}}
                                                 @endforeach
                                             </td>
+                                            <td>{{ $details->cp }}</td>
                                             <td>{{ $details->quantity }}</td>
                                             <td>{{ $details->price }}</td>
                                             <td>
@@ -84,7 +86,7 @@
                                                             <div class="modal-body">
                                                                 <div class="box-body">
                                                                     <form role="form"
-                                                                        action="{{route('admin.transactionDetails.update_detail',$details)}}"
+                                                                        action="{{route('admin.saleDetails.update_detail',$details)}}"
                                                                         method="post" enctype="multipart/form-data">
                                                                         @method('patch')
                                                                         @csrf
@@ -98,6 +100,14 @@
                                                                                             {{ $product->title }}</option>
                                                                                     @endforeach
                                                                                 </select>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="exampleForName">Cost Price</label>
+                                                                                <input type="text" class="form-control"
+                                                                                    name="cp" id="exampleForName"
+                                                                                    placeholder="Enter Cost Price"
+                                                                                    value="{{$details->cp}}"
+                                                                                    required>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label for="exampleForName">Quantity</label>
@@ -129,7 +139,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <a href="{{route('admin.transactionDetails.destroy',$details)}}"
+                                                <a href="{{route('admin.saleDetails.destroy',$details)}}"
                                                 onclick="return confirm('Are you sure you want to delete?');">
                                                 <i class="fa fa-trash text-danger" title="Delete"></i></a>
                                             </td>
@@ -210,7 +220,7 @@
 
     </style>
 @endsection
-{{-- @push('scripts')
+@push('scripts')
     <script>
         function sliderChange(id, show) {
             console.log("yes");
@@ -226,4 +236,5 @@
             });
         }
     </script>
-@endpush --}}
+@endpush
+

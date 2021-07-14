@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
           });
 
           Validator::replacer('greater_than_field', function($message, $attribute, $rule, $parameters) {
-              dd($message);
+            //   dd($message);
             return str_replace(':field', $parameters[0], $message);
           });
     }

@@ -1,56 +1,62 @@
 @extends('admin.master')
-@section('title', 'Transaction')
+@section('title', 'Sales')
 @section('content')
     <section class="content">
         <div class="row">
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">Create Purchase</h3>
+                        <h3 class="box-title">Sales Table</h3>
                         @include('admin.includes.flash_message')
                     </div>
                     <!-- /.box-header -->
+                    <!-- form start -->
                     <div class="box-body">
-                        <form role="form" action="{{route('admin.transaction.store')}}" method="post" enctype="multipart/form-data">
+                        <form role="form" method="POST" action="{{route('admin.sale.store')}}">
                             @csrf
                             <div class="box-body">
                                 <div class="form-group">
-                                    <label for="exampleForName">Merchant Name</label>
-                                    <input type="text" class="form-control" name="merchant_name" id="exampleForName"
-                                        placeholder="Enter Merchant Name" required>
+                                    <label class="control-label">Customer Name</label>
+                                    <input type="text" class="form-control" name="customer_name" id="exampleForName"
+                                    placeholder="Enter Customer Name" required/>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">Date</label>
+                                    <input type="date" class="form-control" name="date" id="exampleForName" required />
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleForName">Date</label>
-                                    <input type="date" class="form-control" name="date" id="exampleForName"
-                                        placeholder="Enter Date" required>
+                                    <label class="control-label">Total Amount</label>
+                                    <input type="number " class="form-control" name="total" id="exampleForName"
+                                    placeholder="Enter Total Amount" required/>
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleForName">Total</label>
-                                    <input type="number" class="form-control" name="total" id="exampleForName"
-                                        placeholder="Enter total" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleForName">Credit</label>
-                                    <input type="number" class="form-control" name="credit" id="exampleForName"
-                                        placeholder="Enter Credit Amount" required>
+                                    <label class="control-label">Credit Amount</label>
+                                    <input type="number " class="form-control" name="credit" id="exampleForName"
+                                    placeholder="Enter Credit Amount" required/>
                                 </div>
                                 {{-- DynamicAddRemove --}}
                                 <table class="table table-bordered" id="dynamicAddRemove">
                                     <tr>
                                         <th>S.N.</th>
                                         <th>Product</th>
+                                        <th>Cost Price</th>
                                         <th>Quantity</th>
-                                        <th>Price</th>
                                         <th></th>
                                     </tr>
                                     <tr>
                                         <td>1</td>
                                         <td>
-                                            <select name="item[0][product_id]" class="form-control" id="product">
+                                            <select name="item[0][product_id]" class="form-control" id="product_0" onchange="loadData(this, 0)">
                                                 <option value="" selected disabled>Select Product</option>
                                                 @foreach ($products as $product)
                                                     <option value="{{$product->id}}">{{$product->title}}</option>
                                                 @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="item[0][cp]" class="form-control" id="cp_0" >
+                                                <option value="" selected disabled>Select Cost Price</option>
                                             </select>
                                         </td>
                                         <td><input type="number" name="item[0][quantity]" placeholder="Enter Quantity" class="form-control" required/>
@@ -63,10 +69,15 @@
                             </div>
                             <!-- /.box-body -->
                             <div class="box-footer">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <div class="col-md-3 col-md-offset-4">
+                                    <a class="btn btn-danger" href="">Cancel</a>
+                                    <button type="submit" class="btn btn-primary">Submit</a>
+                                </div>
                             </div>
+                            <!-- /.box-footer -->
                         </form>
                     </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -89,11 +100,16 @@
                 `<tr>
                     <td>${i+1}</td>
                     <td>
-                        <select name="item[${i}][product_id]" class="form-control" id="product">
+                        <select name="item[${i}][product_id]" class="form-control" id="product_${i}" onchange="loadData(this, ${i})">
                             <option value="" selected disabled>Select Product</option>
                             @foreach ($products as $product)
                                 <option value="{{$product->id}}">{{$product->title}}</option>
                             @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <select name="item[${i}][cp]" class="form-control" id="cp_${i}">
+                            <option value="" selected disabled>Select Cost Price</option>
                         </select>
                     </td>
                     <td><input type="number" name="item[${i}][quantity]" placeholder="Enter Quantity" class="form-control" />
@@ -107,5 +123,23 @@
         $(document).on('click', '.remove-input-field', function () {
             $(this).parents('tr').remove();
         });
+
+        function loadData(element, sn) {
+            let select_cp = document.getElementById(`cp_${sn}`);
+            select_cp.innerHTML = '<option value="" selected disabled>Select Cost Price</option>'
+            console.log(element.value, sn);
+            $.ajax({
+                type: 'GET',
+                url: `/api/inventories/getdata/${element.value}`,
+                data: '',
+                success: function(data) {
+                    console.log(data);
+                    data.forEach(ele => {
+                        let option = `<option value="${ele.price}">${ele.price}</option>`
+                        select_cp.innerHTML += option;
+                    });
+                }
+            });
+        }
     </script>
 @endpush

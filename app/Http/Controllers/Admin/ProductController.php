@@ -62,8 +62,6 @@ class ProductController extends Controller
         $request['user_id'] = Auth::user()->id;
         $product=Product::create($request->all());
         // dd($product);
-        $inventoryController=new InventoryController();
-        $inventoryController->create($product->id);
         return redirect()->route('admin.product.index')->with('success', 'Product created successfully.');
     }
 

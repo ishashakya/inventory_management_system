@@ -4,26 +4,25 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Product;
+use App\Models\Admin\Sale;
+use App\Models\Admin\SalesDetails;
 use App\Models\Admin\Transaction;
-use App\Models\Admin\TransactionsDetails;
 use Illuminate\Http\Request;
 
-class TransactionDetailsController extends Controller
+class SalesDetailController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function view($id){
-        $transactions = Transaction::with('transactiondetails')->find($id);
-        $products= Product::get();
-        // dd($products[0]->id);
-        return view('admin.transactionDetails.view_detail', compact('transactions','products'));
-    }
-    public function index()
+    public function view($id)
     {
-        //
+        // $sales= Transaction::with('saledetails')->find($id);
+        $sales=Transaction::where('transaction_type','Outgoing')->with('saledetails')->find($id);
+        // dd($sales);
+        $products=Product::get();
+        return view('admin.saleDetails.sale_detail',compact('sales','products'));
     }
 
     /**
@@ -64,33 +63,34 @@ class TransactionDetailsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(TransactionsDetails $transactionsdetails)
+    public function edit($id)
     {
-        $products = Product::get();
-        // dd($products);
-        return view('admin.transactionDetails.edit',compact('transactionsdetails','products'));
+        //
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Reque   st  $request
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TransactionsDetails $transactionDetails)
+    public function update(Request $request, SalesDetails $saleDetails)
     {
-        dd($transactionDetails);
+        // dd($saleDetails);
         $validate = $request->validate([
             'product_id' => 'required',
+            'cp'=>'required',
             'quantity'=>'required',
             'price'=>'required',
         ]);
-        $transactionDetails->product_id = $request->product_id;
-        $transactionDetails->quantity = $request->quantity;
-        $transactionDetails->price = $request->price;
-        $transactionDetails->update();
-        return redirect()->back()->with('success', 'Transaction updated successfully.');
+        $saleDetails->product_id = $request->product_id;
+        $saleDetails->cp = $request->cp;
+        $saleDetails->quantity = $request->quantity;
+        $saleDetails->price = $request->price;
+        $saleDetails->update();
+        // dd($salesDetails);
+        return redirect()->back()->with('success', 'Details updated successfully.');
     }
 
     /**
@@ -101,9 +101,8 @@ class TransactionDetailsController extends Controller
      */
     public function destroy($id)
     {
-        $transactionsdetails = TransactionsDetails::where('id',$id)->first();
-        $transactionsdetails->delete();
-        // dd($transactionsdetails);
+        $saledetails = SalesDetails::where('id',$id)->first();
+        $saledetails->delete();
         return redirect()->back()->with('success','Detail deleted successfully');
     }
 }

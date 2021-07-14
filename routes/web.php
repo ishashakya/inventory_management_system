@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\TransactionDetailsController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RegisterController;
+use App\Http\Controllers\Admin\SalesController;
+use App\Http\Controllers\Admin\SalesDetailController;
 use App\Http\Controllers\Admin\TransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -57,12 +59,29 @@ Route::group(['middleware'=>'auth'],function(){
     Route::get('/transaction/delete/{transaction}',[TransactionController::class,'destroy'])->name('admin.transaction.destroy');
     Route::get('/transaction/edit/{transaction}',[TransactionController::class,'edit'])->name('admin.transaction.edit');
     Route::patch('/transaction/update/{transaction}',[TransactionController::class,'update'])->name('admin.transaction.update');
+
     // Transaction Details
     Route::get('/transactiondetails/view/{id}',[TransactionDetailsController::class,'view'])->name('admin.transactionDetails.view_detail');
-    Route::get('/transactiondetails/edit/{transactionDetails}',[TransactionDetailsController::class,'edit'])->name('admin.transactionDetails.edit');
+    // Route::get('/transactiondetails/edit/{transactionDetails}',[TransactionDetailsController::class,'edit'])->name('admin.transactionDetails.edit');
     Route::patch('/transactiondetails/update/{transactionDetails}',[TransactionDetailsController::class,'update'])->name('admin.transactionDetails.update_detail');
     Route::get('/transactiondetails/delete/{id}',[TransactionDetailsController::class,'destroy'])->name('admin.transactionDetails.destroy');
     // Inventories
     Route::get('/inventories/index',[InventoryController::class,'index'])->name('admin.inventories.index');
+
+    // Sales
+    Route::get('/sales/create',[SalesController::class,'create'])->name('admin.sale.create');
+    Route::post('/sales/store',[SalesController::class,'store'])->name('admin.sale.store');
+    Route::get('/sales/index',[SalesController::class,'index'])->name('admin.sale.index');
+    Route::get('/sales/edit/{transaction}',[TransactionController::class,'edit'])->name('admin.sale.edit');
+    Route::get('/sales/delete/{transaction}',[TransactionController::class,'destroy'])->name('admin.sale.destroy');
+
+    // Sale Details
+    Route::get('/saledetails/view/{id}',[SalesDetailController::class,'view'])->name('admin.saleDetails.sale_detail');
+    Route::patch('/saledetails/update/{saleDetails}',[SalesDetailController::class,'update'])->name('admin.saleDetails.update_detail');
+    Route::get('/saledetails/delete/{id}',[SalesDetailController::class,'destroy'])->name('admin.saleDetails.destroy');
+
+    // Api
+    Route::get('/api/inventories/getdata/{product_id}',[InventoryController::class,'get_data'])->name('admin.inventories.getdata');
+
 
 });

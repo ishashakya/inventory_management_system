@@ -1,12 +1,12 @@
 @extends('admin.master')
-@section('title', 'Product')
+@section('title', 'Transaction')
 @section('content')
     <section class="content">
         <div class="row">
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">Product Table</h3>
+                        <h3 class="box-title">Sales Table</h3>
                         @include('admin.includes.flash_message')
                         <div id="msg"></div>
                     </div>
@@ -16,14 +16,34 @@
                             <thead>
                                 <tr>
                                     <th>S.N.</th>
-                                    <th>Product Name</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                    <th>User</th>
+                                    <th>Customer Name</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Credit</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @if (count($sales) > 0)
+                                    @foreach ($sales as $key => $sale)
+                                        <tr>
+                                            <td>{{ ++$key }}</td>
+                                            <td>{{$sale->merchant_name}}</td>
+                                            <td>{{$sale->date}}</td>
+                                            <td>{{$sale->total}}</td>
+                                            <td>{{$sale->credit}}</td>
+                                            <td>
+                                            <a class="mr-2" href="{{route('admin.saleDetails.sale_detail',$sale->id)}}"> <button class="btn btn-sm btn-primary mr-2">
+                                                View Details</button></a>
+                                            <a href="{{route('admin.sale.edit',$sale)}}"><i class="fa fa-edit" title="Edit"></i></a>
+                                            <a href="{{route('admin.sale.destroy',$sale)}}"
+                                                onclick="return confirm('Are you sure you want to delete?');">
+                                                <i class="fa fa-trash text-danger" title="Delete"></i></a>
+                                                {{-- <a href="{{route('admin.transaction.viewdetails')}}"></a> --}}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
                                     <tr>
                                         <td colspan="8" class="text-center">No Records Found..</td>
                                     </tr>
@@ -104,4 +124,3 @@
 
     </style>
 @endsection
-

@@ -63,8 +63,10 @@
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="{{route('admin.transaction.index') }}"><i class="fa fa-circle-o"></i>View Transactions</a></li>
-              <li><a href="{{route('admin.transaction.create')}}"><i class="fa fa-circle-o"></i>Create Transactions</a></li>
+              <li><a href="{{route('admin.transaction.index') }}"><i class="fa fa-circle-o"></i>View Purchase</a></li>
+              <li><a href="{{route('admin.transaction.create')}}"><i class="fa fa-circle-o"></i>Create Purchase</a></li>
+              <li><a href="{{route('admin.sale.index')}}"><i class="fa fa-circle-o"></i>View Sale</a></li>
+              <li><a href="{{route('admin.sale.create')}}"><i class="fa fa-circle-o"></i>Create Sale</a></li>
             </ul>
           </li>
         <li>
@@ -72,6 +74,7 @@
             <i class="fa fa-dashboard"></i> <span>Inventories</span>
         </a>
         </li>
+
           {{-- <li class="treeview">
           <a href="#">
               <i class="fa fa-plus"></i> <span>Blog</span>

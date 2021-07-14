@@ -17,6 +17,7 @@ class CreateInventoriesTable extends Migration
             $table->id();
             $table->string('product_id');
             $table->integer('quantity');
+            $table->integer('price');
             $table->timestamps();
         });
     }
