@@ -83,5 +83,10 @@ Route::group(['middleware'=>'auth'],function(){
     // Api
     Route::get('/api/inventories/getdata/{product_id}',[InventoryController::class,'get_data'])->name('admin.inventories.getdata');
 
+    // Reporting
+    // Route::get('/dashboard/salesreport',[DashboardController::class,'saleReport'])->name('admin.includes.dashboard');
+    // Route::get('/dashboard/productreport',[DashboardController::class,'saleReport'])->name('admin.reporting.product_report');
+    Route::get('/dashboard/creditreport/{start_date}/{end_date}',[DashboardController::class,'creditReport'])->name('admin.reporting.credit_report');
+    Route::get('/dashboard/profitreport/{start_date}/{end_date}',[DashboardController::class,'profitReport'])->name('admin.reporting.profit_report');
 
 });

@@ -80,7 +80,7 @@ class TransactionDetailsController extends Controller
      */
     public function update(Request $request, TransactionsDetails $transactionDetails)
     {
-        dd($transactionDetails);
+        $oldData=collect($transactionDetails);
         $validate = $request->validate([
             'product_id' => 'required',
             'quantity'=>'required',
@@ -90,6 +90,10 @@ class TransactionDetailsController extends Controller
         $transactionDetails->quantity = $request->quantity;
         $transactionDetails->price = $request->price;
         $transactionDetails->update();
+        // dd($oldData,$request);
+
+        $inventoryController= new InventoryController();
+        $inventoryController->updateQuantity($oldData, $request,'Incoming');
         return redirect()->back()->with('success', 'Transaction updated successfully.');
     }
 

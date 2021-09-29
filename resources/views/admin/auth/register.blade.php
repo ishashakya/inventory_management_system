@@ -33,7 +33,7 @@
 @include('admin.includes.flash_message')
 
   <div class="register-logo">
-    <a href="/admin/index2.html"><b>Admin</b>IMS</a>
+    <a href="/admin/index2.html"><b>Inventory</b><br>Management System</a>
   </div>
   <div class="register-box-body">
     <p class="login-box-msg">Register a new membership</p>

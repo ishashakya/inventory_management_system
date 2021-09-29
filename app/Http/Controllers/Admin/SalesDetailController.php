@@ -78,6 +78,7 @@ class SalesDetailController extends Controller
     public function update(Request $request, SalesDetails $saleDetails)
     {
         // dd($saleDetails);
+        $oldData=collect($saleDetails);
         $validate = $request->validate([
             'product_id' => 'required',
             'cp'=>'required',
@@ -90,6 +91,8 @@ class SalesDetailController extends Controller
         $saleDetails->price = $request->price;
         $saleDetails->update();
         // dd($salesDetails);
+        $inventoryController = new InventoryController();
+        $inventoryController->updateQuantity($oldData, $request,'Outgoing');
         return redirect()->back()->with('success', 'Details updated successfully.');
     }
 

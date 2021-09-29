@@ -3,10 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin\Category;
+use App\Models\Admin\Product;
+use App\Models\Admin\SalesDetails;
+use App\Models\Admin\Transaction;
 use App\Models\Dashboard;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
@@ -19,10 +25,37 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function saleReport(){
+        $sales_data = DB::select("SELECT SUM(s.quantity),products.title
+        FROM sales_details AS s, products
+        WHERE s.product_id = products.id
+        GROUP BY products.title ORDER BY SUM(s.quantity) DESC");
+        if(sizeof($sales_data)!=0){
+            return $sales_data[0]->title;
+        }
+    }
+    public function categoryReport(){
+        $category_data = DB::select("SELECT c.id, c.name, SUM(sd.quantity) as sum
+        FROM `sales_details` sd, products p, categories c
+        WHERE sd.product_id = p.id AND p.category_id = c.id
+        GROUP BY c.id, c.name ORDER BY SUM(sd.quantity) DESC");
+        if(sizeof($category_data)!=0){
+            return $category_data[0];
+        }
+        $data = (object)[
+            "name"=>"",
+            "sum"=>"",
+        ];
+
+        return $data;
+    }
     public function dashboard()
     {
-        return view('admin.includes.dashboard');
-
+        $sales_data = $this->saleReport();
+        $category_data = $this->categoryReport();
+        // $data = DB::select("SELECT SUM(price-cp) as profit FROM `sales_details` WHERE created_at>='2021-07-12' AND date(created_at)<='2021-07-14'");
+        // dd($data[0]->profit);
+        return view('admin.includes.dashboard', compact('sales_data','category_data'));
     }
     public function logout()
     {
@@ -82,9 +115,23 @@ class DashboardController extends Controller
             return redirect()->back()->with('error','Old Password do not match');
         }
     }
-    public function index()
+
+    public function creditReport($start_date, $end_date){
+        // dd($start_date,$end_date);
+        $credit_report = DB::select("SELECT SUM(credit) as sum, transaction_type
+        FROM `transactions`
+        -- WHERE date>='".$start_date."' AND date<='".$end_date."'
+        WHERE date>='".$start_date."' AND date<='".$end_date."'
+        GROUP by transaction_type");
+
+        return ($credit_report);
+    }
+    public function profitReport($start_date, $end_date)
     {
-        //
+        $profit_report = DB::select("SELECT SUM(price-cp) as sum
+        FROM `sales_details`
+        WHERE created_at>='".$start_date."' AND date(created_at)<='".$end_date."'");
+        return ($profit_report);
     }
 
     /**

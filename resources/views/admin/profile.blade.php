@@ -10,12 +10,9 @@
       <div class="box box-primary">
         <div class="box-body box-profile">
           <img class="profile-user-img img-responsive img-circle" src="/uploads/admin_profile/{{$admin->image}}" alt="User profile picture">
-
           <h3 class="profile-username text-center">{{$admin->name}}</h3>
-
           <p class="text-muted text-center">{{$admin->username}}</p>
-
-          <ul class="list-group list-group-unbordered">
+          {{-- <ul class="list-group list-group-unbordered">
             <li class="list-group-item">
               <b>Followers</b> <a class="pull-right">1,322</a>
             </li>
@@ -26,8 +23,7 @@
               <b>Friends</b> <a class="pull-right">13,287</a>
             </li>
           </ul>
-
-          <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+          <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a> --}}
         </div>
         <!-- /.box-body -->
       </div>
@@ -41,29 +37,19 @@
         <!-- /.box-header -->
         <div class="box-body">
           <strong><i class="fa fa-book margin-r-5"></i> Bio</strong>
-
           <p class="text-muted">
             {{Auth::user()->bio}}
           </p>
-
           <hr>
-
           <strong><i class="fa fa-map-marker margin-r-5"></i> Email</strong>
-
           <p class="text-muted">{{$admin->email}}</p>
-
           <hr>
-
           <strong><i class="fa fa-pencil margin-r-5"></i> Username</strong>
-
           <p>
             {{$admin->username}}
           </p>
-
           <hr>
-
           <strong><i class="fa fa-file-text-o margin-r-5"></i> Member Since</strong>
-
           <p>{{$admin->created_at->diffForHumans()}}</p>
         </div>
         <!-- /.box-body -->

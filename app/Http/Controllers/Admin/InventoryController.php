@@ -46,6 +46,23 @@ class InventoryController extends Controller
             $this->create($transaction_detail);
         }
     }
+    public function updateQuantity($oldData, $newData, $type){
+        // dd($oldData['product_id'],$newData);
+        if($type=='Incoming'){
+            $inventory=Inventory::where('product_id',$oldData['product_id'])->
+            where('price',$oldData['price'])->get();
+
+            $inventory[0]->quantity+= $newData->quantity - $oldData['quantity'];
+            $inventory[0]->update();
+            // dd($inventory[0],$newData,$oldData);
+        } else{
+            $inventory=Inventory::where('product_id',$oldData['product_id'])->
+            where('price',$oldData['cp'])->get();
+
+            $inventory[0]->quantity-= $newData->quantity - $oldData['quantity'];
+            $inventory[0]->update();
+        }
+    }
 
     public function reduceQuantity($sale_detail){
         $inventory=Inventory::where('product_id',$sale_detail->product_id)->
